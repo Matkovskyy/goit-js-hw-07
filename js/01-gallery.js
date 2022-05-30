@@ -35,7 +35,6 @@ function onGalleryImageClickOpenModal(event) {
 	modal.show();
 	if (modal.visible()) setBodyScrollY('disabled');
 
-	// window.addEventListener('keydown', onEscapeKeydownCloseModal);
 }
 
 function onGalleryImageClickCloseModal(event)
