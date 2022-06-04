@@ -40,8 +40,8 @@ function onGalleryImageClickOpenModal(event) {
 function onGalleryImageClickCloseModal(event)
 {
 	event.addEventListener('keydown', (event) => {
-		if (event.code === "Escape") {
-		}
+		if (event.code === "Escape") {}
 	}
 	)
 };
+
