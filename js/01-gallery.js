@@ -1,47 +1,54 @@
+// --------variant1---------
 import { galleryItems } from './gallery-items.js';
 // Change code below this line
-const blockGallery = document.querySelector('.gallery');
 
-const galleryList = galleryItems.map(item =>
-    `<div class="gallery__item">
-  <a class="gallery__link" href="${item.original}">
+const blockGallery = document.querySelector('.gallery');
+const galleryItemsMarkup = createGalleryItems(galleryItems);
+
+blockGallery.insertAdjacentHTML('beforeend', galleryItemsMarkup);
+blockGallery.addEventListener('click',handleGalleryContainer)
+
+function createGalleryItems(elements) {
+    return elements.map(({ preview, original, description }) => {
+       return `<div class="gallery__item">
+  <a class="gallery__link" href=${original}>
     <img
       class="gallery__image"
-      src="${item.preview}"
-      data-source="${item.original}"
-      alt="${item.description}"
+      src=${preview}
+      data-src="${original}" 
+      alt=${description}
     />
   </a>
 </div>`
-).join('');
-blockGallery.innerHTML = galleryList;
-
-const modal = basicLightbox.create(
-	`<div class="modal"><img src="" width="800" height="600"></div>`
-);
-refs.gallery.addEventListener('click', onGalleryImageClickOpenModal);
-
-function onGalleryImageClickOpenModal(event) {
-	event.preventDefault();
-
-	const IMG_TAG = 'IMG';
-	const isEventOnImage = event.target.nodeName === IMG_TAG;
-	const currentPreviewImage = event.target;
-	const modalImgRef = modal.element().querySelector('img');
-
-	if (!isEventOnImage) return;
-
-	setOriginalImageURL(currentPreviewImage, modalImgRef);
-	modal.show();
-	if (modal.visible()) setBodyScrollY('disabled');
-
-}
-
-function onGalleryImageClickCloseModal(event)
-{
-	event.addEventListener('keydown', (event) => {
-		if (event.code === "Escape") {}
-	}
-	)
+    }).join("")
 };
 
+const instance = basicLightbox.create(`
+    <img class="gallery__modal__img" src=''>
+`,
+    {
+        onShow: instance => {
+            window.addEventListener('keydown', onEscapeClick);
+        },
+        onClose: instance => {
+            window.removeEventListener('keydown', onEscapeClick);
+        },
+    },
+);
+function onEscapeClick(event){
+    if (event.key === 'Escape') {
+        instance.close();
+}}
+
+function handleGalleryContainer(event) {
+    event.preventDefault();
+       
+    if (event.target.nodeName !== 'IMG') {
+        return;
+    }
+
+    instance.element().querySelector('.gallery__modal__img').src = event.target.dataset.src;
+    instance.show();
+
+ 
+}
